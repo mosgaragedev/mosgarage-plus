@@ -1,405 +1,174 @@
-# DevPod
-> Containerized Development Environment for Every Workflow
-
-A versatile development environment that can integrate multiple AI assistants within isolated containers, or work perfectly as a standalone DevContainer workspace. Keep your host system safe with only 3 required apps: **VS Code**, **Git**, and **Docker/Podman**.
-
-## 🎯 **Quick Decision: Choose Your Workflow**
-
-```mermaid
-flowchart TD
-    A["I need a development environment"] --> B@{ label: "What's your use case?" }
-    B -- Quick testing, experiments --> C["🚀 Disposable Workflow"]
-    B -- One main project --> D["📦 Single Project Workflow"]
-    B -- Multiple projects --> E["🌟 Multi-Project Workflow"]
-
-    C --> C1["✅ Clone → Configure → Code<br>🕒 Short-lived, ephemeral environment<br>🗑️ No version control needed<br>🌱 Ideal for: Rapid tests, learning, throwaway prototypes<br>🔧 Tools: Lightweight setups, containers, live reloads"]
-    D --> D1["✅ Fork → Configure → Commit → Code<br>🔄 Persistent environment tracking config changes<br>🗃️ Uses version control to maintain history<br>🔐 Personal or client projects with focused scope<br>🎯 Supports debugging, CI pipelines, stable workspace"]
-    E --> E1["✅ Fork → Worktree → Branches<br>🌐 Project-specific isolated environments<br>👥 Ideal for teams, complex multi-client workflows<br>🔄 Advanced branching, environment synchronization<br>🔗 Integrates with collaboration tools & deployment pipelines"]
-
-    B@{ shape: decision}
-    C1@{ shape: subroutine}
-    D1@{ shape: process}
-    E1@{ shape: subroutine}
-    
-    style C fill:#3366FF,color:#FFFFFF
-    style D fill:#FF6633,color:#FFFFFF
-    style E fill:#336633,color:#FFFFFF
-```
-
-**New to DevPod?** → Start with [🚀 Disposable Workflow](#-disposable-workflow)  
-**Have multiple projects?** → Use [🌟 Multi-Project Workflow](#-multi-project-workflow)  
-**Working with a team?** → Use [🌟 Multi-Project Workflow](#-multi-project-workflow)
-
----
-
-## 🚀 **Disposable Workflow** 
-*Perfect for: Quick testing, learning, experiments*
-
-### 3-Step Setup
-```bash
-# 1. Clone & Enter
-git clone https://github.com/xeroflare/DevPod.git my-test-env && cd my-test-env
-
-# 2. Configure (30 seconds)
-cp .devcontainer/devcontainer.json.template .devcontainer/devcontainer.json
-# Edit devcontainer.json: choose container type, add extensions
-
-# 3. Launch
-code . 
-# → Ctrl+Shift+P → "Dev Containers: Reopen in Container"
-# → Run: claude auth
-```
-
-**✅ Benefits:**
-- Instant setup, no configuration persistence needed
-- Perfect isolation from host system  
-- Full AI assistance with Claude Code, Gemini Code Assist, and OpenCode AI
-- Works great as a standalone DevContainer environment
-
-**🎯 Use Cases:**
-- Testing new frameworks or libraries
-- Following tutorials and courses
-- Quick prototyping and experiments
-- Temporary development tasks
-
----
-
-## 📦 **Single Project Workflow**
-*Perfect for: Personal projects, client work, long-term development*
-
-### Setup Process
-```bash
-# 1. Fork DevPod to your account
-# GitHub: Fork button → your-username/devpod
-
-# 2. Clone your fork
-git clone git@github.com:your-username/devpod.git
-cd devpod
-
-# 3. Customize for Your Project environment
-cp .devcontainer/devcontainer.json.template .devcontainer/devcontainer.json
-# Create your .devcontainer/custom image if needed
-# Edit devcontainer.json: container type, extensions, ports, etc.
-# Customize workspace-ai/ for your specific needs
-
-# 4. Commit Your Environment
-git add .devcontainer/
-git commit -m "Configure development environment for my project"
-
-# 5. Start Development
-code . # → Reopen in Container → claude auth
-```
-
-**✅ Benefits:**
-- Environment configuration is version controlled
-- Teammates get identical setup
-- Easy to reproduce and share
-- AI configuration persists with workspace-ai customization
-- Perfect as a standalone DevContainer workspace
-
-**🎯 Use Cases:**
-- Personal project development
-- Client project work
-- Open source contributions
-- Consistent team environments
-
----
-
-## 🌟 **Multi-Project Workflow**
-*Perfect for: Teams, multiple clients, complex project management*
-
-### Architecture
-```
-~/my-awesome-projects/
-├── devpod/           # Main branch: your base config
-│   ├── .ai/                 # AI configurations and documentation
-│   ├── .devcontainer/       # Container templates
-│   └── workspace/           # Mount point only
-├── devpod-client-a/  # Project A branch
-│   ├── .ai/                 # Client A specific AI config
-│   ├── .devcontainer/       # Client A container setup
-│   └── workspace/           # Client A project files
-└── devpod-client-b/  # Project B branch
-    ├── .ai/                 # Client B specific AI config
-    ├── .devcontainer/       # Client B container setup
-    └── workspace/           # Client B project files
-```
-
-### Setup Process
-```bash
-# 1. Fork DevPod to your account
-# GitHub: Fork button → your-username/devpod
-
-# 2. Clone your fork
-git clone git@github.com:your-username/devpod.git
-cd devpod
-
-# 3. Customize your base configuration
-cp .devcontainer/devcontainer.json.template .devcontainer/devcontainer.json
-# Edit for your personal preferences, commit to main branch
-git add .devcontainer/ workspace-ai/ # or any other
-git commit -m "Configure personal preferences"
-
-# 4. Create project-specific environments
-# Create ../devpod-client-a
-git worktree add ../devpod-client-a -b client-a main
-# Create ../devpod-client-b
-git worktree add ../devpod-client-b -b client-b main
-
-# 5. Customize each project environment
-cd ../devpod-client-a
-# Customize .devcontainer/ and workspace-ai/ for client A
-# Commit project-specific configuration & environment
-git add .devcontainer/ workspace-ai/ # or any other
-git commit -m "Configure project environment"
-# Share project environment with team
-git push origin client-a
-
-# 6. Start Development
-# project files will be in workspace/ (ignored by environment repo)
-code . # → Reopen in Container → claude auth
-
-# 7. Manage Your Project Environments
-# Now you can keep all your project worktrees under control
-git worktree list
-```
-
-### Management Commands
-```bash
-# Important: Switch to main branch before updating from upstream
-# Be mindful of your worktree setup and any unstaged changes from other branches
-git checkout main
-
-# Set up upstream for updates
-git remote add upstream https://github.com/xeroflare/DevPod.git
-
-# Update from upstream (new DevPod features)
-git fetch upstream
-git merge upstream/main
-
-# Push your environment to your repo
-git push origin main
-```
-
-**✅ Benefits:**
-- Isolated environments per project
-- Shared base configuration with project customization
-- Easy upstream updates without losing customizations
-- Team collaboration with project-specific setups
-- Git worktree efficiency (shared .git directory)
-
-**🎯 Use Cases:**
-- Multiple clients, or multiple projects
-- Team development across multiple projects
-- Different technology stacks per project
-- Complex project portfolio management
-
----
-
-## 🤖 **AI-Powered Development**
-
-### Why Claude Code AI?
-- **🚀 Instant Setup**: Pro subscription = immediate CLI access
-- **🔄 Ultimate Flexibility**: Switch AI providers effortlessly  
-- **🛡️ Anthropic-Backed**: Safe, advanced AI technology
-- **✨ Beautiful CLI**: Most elegant AI coding interface
-- **🔧 Developer-First**: Built specifically for coding workflows
-
-### Multi-AI Workspace System
-DevPod provides a **workspace-AI** system supporting multiple AI assistants with user customization:
-
-```
-.ai/
-├── claude/                 # Claude AI configuration (upstream)
-├── gemini/                 # Gemini AI configuration (upstream)
-└── README.md               # Setup and integration guide
-
-workspace-ai/               # Your customizations (user-managed, create as needed)
-├── claude/                 # Claude project-level customization
-├── gemini/                 # Gemini project-level customization
-└── .gitignore              # Ignore unwanted AI assistant files
-```
-
-### Configuration Levels
-1. **System Level** (`.ai/{assistant}/`) - DevPod defaults, version controlled
-2. **Project Level** (`workspace-ai/{assistant}/`) - Your customizations, mounted to `/mnt/workspace/.{assistant}/`
-3. **User Level** - AI authentication and personal settings in container home directory
-
-### Supported AI Assistants
-- **Claude Code**: Anthropic's Claude with VS Code integration
-- **Gemini Code Assist**: Google's Gemini with VS Code integration  
-- **OpenCode AI**: Open-source AI assistant for development
-- **Extensible**: Easy to add more AI assistants
-
-### AI Assistant Setup Commands
-After container starts, authenticate your AI assistants:
-
-```bash
-# Standard authentication (recommended)
-claude auth
-gemini auth  
-opencode auth login
-```
-
-### Containerized AI Permissions
-In DevPod's safe container environment, you can grant AI assistants full permissions to operate without interruption:
-
-```bash
-# These commands allow AI to operate without asking permission for each action
-# Safe because they only affect the isolated container, not your host system
-
-claude auth --dangerously-skip-permissions  # Claude's term, but safe in container
-gemini --yolo                               # Gemini's automatic action acceptance
-```
-
-> **🛡️ DevContainer Safety**: DevPod operates in an isolated container environment where advanced commands with "dangerous" flags are completely safe. These commands only affect the containerized development workspace, never your host system. The container isolation ensures all experimental configurations, permission bypasses, and advanced features remain sandboxed within the development environment.
->
-> **Perfect for DevPod**: The containerized workspace is designed for this type of unrestricted development, making AI assistance seamless while maintaining complete host system protection.
-
-### Best Practices
-- **Create workspace-ai directories as needed**: `mkdir -p workspace-ai/claude workspace-ai/gemini`
-- Keep `workspace-ai/` under version control for your project customizations
-- Use `.gitignore` to exclude unwanted AI assistant cache/temp files
-- Follow upstream recommendations in `.ai/README.md`
-
----
-
-## ⚙️ **Configuration Options**
-
-### Container Types
-Choose your development environment in `devcontainer.json`:
-
-**Docker Compose** (Multi-service):
-```json
-"dockerComposeFile": "ubuntu.docker-compose.yml",
-"service": "app"
-```
-
-**Custom Dockerfile** (Single container):
-```json
-"dockerFile": "ubuntu.Dockerfile",
-"context": "."
-```
-
-**Public Image** (Fastest):
-```json
-"image": "mcr.microsoft.com/devcontainers/python:3.11"
-```
-
-### Available Environments
-- **Ubuntu**: Clean Ubuntu 24.04 with development tools
-- **Python + PostgreSQL**: Full Python stack with database
-- **Custom**: Create your own in `.devcontainer/custom/`
-
-### AI Customization
-- **Multi-AI Support**: Claude Code and Gemini Code Assist out of the box
-- **Project-Level Config**: Use `workspace-ai/` for project-specific AI settings
-- **Version Control**: Track your AI customizations alongside your project setup
-
-### Best Practices
-- **Base Configuration**: Keep personal preferences in main branch
-- **Project Configuration**: Share project-specific setups via branches
-- **Documentation**: Include setup instructions in project README
-- **Onboarding**: New team members get working environment in minutes
-
-
----
-
-## 🔧 **Advantages**
-
-### SSH Key Management
-- **Repository-specific keys**: Different keys for different repositories
-- **Automatic mounting**: SSH keys persist across container rebuilds
-- **Security isolation**: Personal Keys stored safely outside containers
-- **Team coordination**: Deploy keys for shared repositories
-
-### Host System Safety
-- **Minimal Requirements**: Only VS Code + Git + Docker/Podman needed
-- **Complete Isolation**: All development happens in containers
-- **Easy Cleanup**: Remove containers without affecting host
-- **Security**: No direct host system modification
-
-### Updates & Maintenance
-- **Upstream Updates**: Get new DevPod features safely
-- **Configuration Preservation**: Your customizations survive updates
-- **Migration Tools**: Easy transition between workflow types
-- **Rollback Support**: Revert changes if needed
-
----
-
-## 🚦 **Getting Started Checklist**
+[![team project](http://jb.gg/badges/team.svg)](https://github.com/JetBrains#jetbrains-on-github)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
+# DevContainers Examples
+
+A comprehensive collection of examples demonstrating how to use DevContainers with JetBrains IDEs.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [What are DevContainers?](#what-are-devcontainers)
+- [Benefits of DevContainers](#benefits-of-devcontainers)
+- [Repository Structure](#repository-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Usage](#usage)
+- [Examples](#examples)
+  - [Minimal OS Examples](#minimal-os-examples)
+  - [Specification Examples](#specification-examples)
+  - [Demo Applications](#demo-applications)
+  - [Customizations](#customizations)
+  - [GPU Support](#gpu-support)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Overview
+
+This repository provides a collection of examples and templates for using DevContainers with JetBrains IDEs. It demonstrates various configurations, features, and use cases to help developers quickly set up reproducible development environments.
+
+## What are DevContainers?
+
+DevContainers (Development Containers) are a technology that allows developers to package a fully functional development environment inside containers. This approach ensures that all team members work with identical development environments, regardless of their local setup.
+
+The DevContainers approach enables:
+
+- Running applications in isolated environments
+- Using IDEs and development tools consistently across the team
+- Managing appropriate versions of libraries and dependencies
+- Configuring runtimes required by specific codebases and projects
+- Simplifying onboarding for new team members
+- Utilizing remote development capabilities on servers with Docker and necessary hardware
+
+## Benefits of DevContainers
+
+- **Consistency**: Everyone on the team works with the same environment, eliminating "it works on my machine" problems
+- **Efficiency**: Significantly reduces time spent setting up development environments
+- **Onboarding**: New team members can start contributing quickly without extensive environment setup
+- **Isolation**: Projects with different dependencies can coexist without conflicts
+- **Portability**: Development environments can be easily moved between machines
+- **Reproducibility**: Environments can be recreated exactly as needed for debugging or testing
+
+JetBrains IDEs provide built-in support for DevContainers, allowing you to:
+- Use pre-configured environments with required dependencies
+- Create and customize your own DevContainers
+- Access source code without manual uploading (via source mounting or creating a DevContainer from a repository over SSH)
+- Enjoy the same developer experience as when working locally, thanks to Remote Development technology
+
+## Repository Structure
+
+This repository is organized into several main directories:
+
+- **`minimalOS/`**: Contains minimal DevContainer configurations for various operating systems
+- **`specification/`**: Demonstrates different DevContainer specification options and features
+- **`demoApps/`**: Contains sample applications configured to run in DevContainers
+- **`customizations/`**: Shows how to customize DevContainers with plugins and extensions
+- **`gpu_amd64/`**: Provides examples for GPU support in DevContainers
+
+## Getting Started
 
 ### Prerequisites
-- [ ] **Docker Desktop** or **Podman** installed and running
-- [ ] **VS Code** with [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-- [ ] **Git** configured with your identity
-- [ ] **AI Assistant Account** (optional - DevPod works perfectly as a standalone DevContainer)
-  - **Claude Code** (recommended): Sign up at [claude.ai](https://claude.ai)
-  - **Gemini Code Assist**: Available through Google's platform
-  - **OpenCode AI**: Open-source alternative
-  - DevPod can be used as a version-controlled DevContainer workspace without any AI assistants 
 
-### First Time Setup
-- [ ] Choose your workflow (Disposable, Single Project, or Multi-Project)
-- [ ] Clone/fork the repository
-- [ ] Copy and configure `devcontainer.json`
-- [ ] Open in VS Code and rebuild container
-- [ ] **Authenticate AI assistants** (optional - skip if using DevPod without AI):
-  ```bash
-  # Standard authentication
-  claude auth
-  gemini auth
-  opencode auth login
-  
-  # Safe containerized permissions: AI can operate without asking permission
-  # Claude calls this "dangerously skip permissions"
-  claude --dangerously-skip-permissions
-  gemini --yolo
-  ```
-- [ ] Test basic functionality
+- Docker installed on your local machine
+- A JetBrains IDE with DevContainers support (IntelliJ IDEA, PyCharm, WebStorm, etc.)
+- [JetBrains DevContainers Plugin](https://plugins.jetbrains.com/plugin/21962-dev-containers)
 
-### Verification
-- [ ] Container builds and starts successfully
-- [ ] AI assistant responds to `claude chat`
-- [ ] File operations work correctly
-- [ ] Extensions load properly
-- [ ] SSH keys (if needed) are accessible
+### Installation
 
----
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/JetBrains/devcontainers-examples.git
+   cd devcontainers-examples
+   ```
 
-## 📚 **Documentation**
+2. Install the DevContainers plugin in your JetBrains IDE:
+   - Go to Settings/Preferences > Plugins
+   - Search for "Dev Containers"
+   - Install the plugin and restart your IDE
 
-### Core Documentation
-- **Multi-Project Workflow**: Advanced Git worktree setup for complex project management
-- **[.devcontainer/README.md](.devcontainer/README.md)**: Container setup guide
-- **[.ai/README.md](.ai/README.md)**: Multi-AI workspace configuration
+### Usage
 
-### Workflow Guides
-- **Disposable Development**: Quick setup for temporary work
-- **Single Project Management**: Long-term project development
-- **Multi-Project Organization**: Complex project portfolio
-- **Multi-Project Management**: Team collaboration with isolated environments
+The DevContainer configuration is defined in a `devcontainer.json` file, which can be located in one of the following paths:
 
-### Advanced Topics
-- **Custom Container Creation**: Build your own environments
-- **AI Agent Development**: Create specialized assistants
-- **MCP Integration**: Extend AI capabilities
-- **Security Configuration**: Secure development practices
+- `.devcontainer/devcontainer.json`
+- `.devcontainer.json`
+- `.devcontainer/<folder>/devcontainer.json` (where `<folder>` is a sub-folder, one level deep)
 
----
+To build and run a DevContainer:
 
-## 🎉 **Welcome to DevPod!**
+1. Open your project in a JetBrains IDE
+2. The IDE will detect the DevContainer configuration and prompt you to reopen the project in a container
+3. Click "Reopen in Container" to start the container build process
+4. Once the container is built, your IDE will connect to it and you can start working
 
-You're now ready to experience containerized development in a safe, isolated environment. Whether you're prototyping quickly, developing long-term projects, or managing complex multi-project portfolios, DevPod adapts to your workflow with or without AI assistance.
+For detailed instructions, refer to the [official JetBrains documentation](https://www.jetbrains.com/help/idea/connect-to-devcontainer.html#start_from_gateway).
 
-**Need help?** Check the documentation files or create an issue for support.
+## Examples
 
-**Ready to start?** Pick your workflow above and begin coding in your isolated development environment! 🚀
+### Minimal OS Examples
 
----
+The `minimalOS/` directory contains examples for various Linux distributions:
 
-*DevPod: Where AI meets DevOps in perfect harmony* ✨
+- Alpine
+- Ubuntu
+- Debian
+- Fedora
+- AlmaLinux
+- ArchLinux (AMD64 and ARM64)
+- ClearLinux
+- Gentoo
+- Kali Linux
+- Manjaro
+- openSUSE
+- Oracle Linux
+- Rocky Linux
 
----
+These examples provide a minimal setup for each operating system with the necessary dependencies for DevContainers.
 
-**👤🤝🤖 Hybrid development: in collaboration with AI** - core functionality is verified by human. Documentation may include inaccuracies resulting from AI assistance. Please use responsibly; the project is provided as-is, without guarantee.
+### Specification Examples
+
+The `specification/` directory contains examples demonstrating various DevContainer specification options:
+
+- Port forwarding and attributes
+- Environment variables
+- User configuration
+- Command overrides
+- Security options
+- Mounts and volumes
+- Features and customizations
+- Workspace configuration
+- Lifecycle hooks
+- Docker Compose integration
+
+### Demo Applications
+
+The `demoApps/` directory contains sample applications configured to run in DevContainers:
+
+- `python-webserver/`: A Python web server example
+- `static/`: A static website example
+
+### Customizations
+
+The `customizations/` directory demonstrates how to customize DevContainers:
+
+- `plugins/`: Examples of configuring IDE plugins in DevContainers
+
+### GPU Support
+
+The `gpu_amd64/` directory provides examples for using GPUs in DevContainers.
+
+## Troubleshooting
+
+If you encounter any issues, please click "Help" → "Submit a bug report…" in the IDE and describe the problem—we’ll do our best to help.
+
+## Contributing
+
+Contributions to this repository are welcome! If you have an example or improvement to share, please submit a pull request.
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE.txt](LICENSE.txt) file for details.
+
+Copyright 2025 JetBrains s.r.o. and respective authors and developers.
