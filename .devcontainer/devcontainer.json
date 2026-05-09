@@ -1,0 +1,48 @@
+{
+    "name": "mosgarage-base",
+    "image": "ghcr.io/open-cloud-dev/devcontainers:full",
+    "features": {
+      "ghcr.io/devcontainers/features/go:1": {},
+      "ghcr.io/meaningful-ooo/devcontainer-features/homebrew:2": {},
+      "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+      "ghcr.io/devcontainers-contrib/features/kubectx-kubens:1": {},
+      "ghcr.io/rio/features/k9s:1": {},
+      "ghcr.io/devcontainers/features/nix:1": {},
+      "ghcr.io/devcontainers/features/node:1": {},
+      "ghcr.io/devcontainers-contrib/features/pre-commit:2": {},
+      "ghcr.io/devcontainers/features/python:1": {},
+      "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+      "ghcr.io/devcontainers/features/github-cli:1": {},
+      "ghcr.io/devcontainers/features/powershell:1": {},
+      "ghcr.io/azure/azure-dev/azd:0": {},
+      "ghcr.io/devcontainers/features/common-utils:2": {},
+      "ghcr.io/devcontainers/features/dotnet:2": {
+              "version": "none",
+              "dotnetRuntimeVersions": "10.0",
+              "aspNetCoreRuntimeVersions": "10.0"
+          }
+    },
+    "customizations": {
+      "vscode": {
+        "extensions": [
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "GitHub.copilot",
+                "GitHub.vscode-github-actions",
+                "ms-dotnettools.csdevkit",
+                "ms-vscode.vscode-node-azure-pack",
+                "xdebug.php-debug",
+                "bmewburn.vscode-intelephense-client",
+                "eamodio.gitlens",
+                "donjayamanne.githistory"
+                "ms-dotnettools.csdevkit",
+        				"ms-dotnettools.dotnet-interactive-vscode",
+        				"vscode-icons-team.vscode-icons",
+        				"humao.rest-client",
+        				"42Crunch.vscode-openapi",
+        				"stoplight.spectral"
+        ]
+      }
+        },
+      "forwardPorts": [5000, 3000, 8000, 10000],
+}
+        
